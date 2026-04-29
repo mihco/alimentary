@@ -11,6 +11,10 @@ app.use('/', authRoutes);
 
 app.use('/user', userRoutes);
 
+app.get('/', (req, res) => {
+    res.send('hello world!');
+})
+
 app.get('/status', (req,res) => {
     res.json({
         status: 'Running',
