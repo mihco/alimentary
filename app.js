@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 const sequelize = require('./common/database');
 const defineUser = require('./common/models/User');
 const User = defineUser(sequelize)
@@ -11,8 +12,8 @@ app.use('/', authRoutes);
 
 app.use('/user', userRoutes);
 
-app.get('/', (req, res) => {
-    res.send('hello world!');
+app.get('/home', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'index.html'));
 })
 
 app.get('/status', (req,res) => {
