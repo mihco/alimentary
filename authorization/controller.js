@@ -30,7 +30,7 @@ exports.register = async (req, res) => {
     if(!validate(req.body)) {
         return res.status(400).json({ error:'Invalid input', details: validate.errors });
     }
-
+ 
     try {
         const { username, email, password, firstName, lastName, age } = req.body;
         const encryptedPassword = encryptPassword(password);
@@ -53,11 +53,16 @@ exports.register = async (req, res) => {
     }
 }
 
-exports.login = async (res, req) => {
-    const {username, password} = req.body;
+exports.login = async (req, res) => {
+    const {username, email, password} = req.body;
     const encrypted = encryptPassword(password);
-    const user = await User.findOne({ where: username});
-
+    let user = '';
+    if(email) {
+        user = await User.findOne({where: {email: email}})
+    } else {
+        user = await User.findOne({ where: username});
+    }
+    
     if(!user || user.password !== encrypted)
         return res.status(401).json({error: 'Invalid credentials'});
 
