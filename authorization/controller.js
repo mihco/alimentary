@@ -33,6 +33,12 @@ exports.register = async (req, res) => {
  
     try {
         const { username, email, password, firstName, lastName, age } = req.body;
+        const existingEmail = await User.findOne({ where: {"email": email}})
+        const existingUsername = await User.findOne({ where: {username: username}  })
+        if (existingEmail || existingUsername) {
+            throw new Error("username or email already exists")
+        }
+
         const encryptedPassword = encryptPassword(password);
         const user = await User.create({
             username,
@@ -49,6 +55,7 @@ exports.register = async (req, res) => {
             token: accessToken
         });
     } catch (err) {
+        console.log(err)
         res.status(500).json({ success: false, error: err.message })
     }
 }
@@ -60,7 +67,7 @@ exports.login = async (req, res) => {
     if(email) {
         user = await User.findOne({where: {email: email}})
     } else {
-        user = await User.findOne({ where: username});
+        user = await User.findOne({ where: {username: username}});
     }
     
     if(!user || user.password !== encrypted)
