@@ -35,8 +35,10 @@ exports.register = async (req, res) => {
         const { username, email, password, firstName, lastName, age } = req.body;
         const existingEmail = await User.findOne({ where: {"email": email}})
         const existingUsername = await User.findOne({ where: {username: username}  })
-        if (existingEmail || existingUsername) {
-            throw new Error("username or email already exists")
+        if (existingEmail) {
+            throw new Error("email already registered")
+        } else if (existingUsername) {
+            throw new Error("username taken")
         }
 
         const encryptedPassword = encryptPassword(password);
