@@ -7,6 +7,7 @@ const addFormats = require("ajv-formats")
 const Ajv = require('ajv');
 const ajv = new Ajv();
 addFormats(ajv);
+const router = require('express').Router();
 
 const schema = {
     type: 'object',
@@ -26,7 +27,7 @@ const encryptPassword = (password) =>
 const generateAccessToken = (username, userID) =>
     jwt.sign({ username, userID}, 'your-secret-key', { expiresIn: '24h' });
 
-exports.register = async (req, res) => {
+const register = async (req, res) => {
     if(!validate(req.body)) {
         return res.status(400).json({ error:'Invalid input', details: validate.errors });
     }
@@ -62,7 +63,7 @@ exports.register = async (req, res) => {
     }
 }
 
-exports.login = async (req, res) => {
+const login = async (req, res) => {
     const {username, email, password} = req.body;
     const encrypted = encryptPassword(password);
     let user = '';
@@ -78,3 +79,9 @@ exports.login = async (req, res) => {
     const token = generateAccessToken(username, user.id);
     res.json({success: true, user, token})
 }
+
+
+//const AuthController = require('./controller');
+router.post('/signup', register);
+router.post('/login', login);
+module.exports = router;
