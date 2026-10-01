@@ -5,7 +5,7 @@ const sequelize = require('./common/database');
 const defineUser = require('./common/models/User');
 const User = defineUser(sequelize)
 const authRoutes = require('./controllers/authorization');
-const userRoutes = require('./users/routes');
+const userRoutes = require('./controllers/users')
 app.use(express.json());
 
 app.use('/', authRoutes);
